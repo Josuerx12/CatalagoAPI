@@ -5,6 +5,28 @@ class AuthController {
     this.user = new UserService();
     this.newUser = this.newUser.bind(this);
     this.login = this.login.bind(this);
+    this.recoveryAccount = this.recoveryAccount.bind(this);
+  }
+  async recoveryAccount(req, res) {
+    try {
+      await this.user.recoveryUser(req.body);
+      return res.status(200).json({
+        payload: {
+          status: "Success",
+          message: "E-mail with the new password has been sent with success!",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(501).json({
+        payload: {
+          status: "Failed",
+          error: error.message.includes("User not exists.")
+            ? error.message
+            : "Fail to recovery your account, try again latter.",
+        },
+      });
+    }
   }
   async newUser(req, res) {
     try {

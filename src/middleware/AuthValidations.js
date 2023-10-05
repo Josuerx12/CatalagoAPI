@@ -29,6 +29,12 @@ const newUserValidations = [
   }),
 ];
 
+const recoveryValidation = [
+  body("email")
+    .isEmail()
+    .withMessage("A valid e-mail is required to recover an account."),
+];
+
 const loginValidations = [
   body("email")
     .isEmail()
@@ -45,4 +51,4 @@ const loginValidations = [
   body("password").isString().withMessage("Password was required."),
 ];
 
-module.exports = { newUserValidations, loginValidations };
+module.exports = { newUserValidations, loginValidations, recoveryValidation };

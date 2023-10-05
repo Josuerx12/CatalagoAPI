@@ -1,11 +1,41 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const createdAccoutBodyEmail = require("../utils/emailBody");
+const { accountCreated, accountRecovery } = require("../utils/emailBody");
 const transporter = require("../utils/emailTransporter");
+const generator = require("generate-password");
 const secret = process.env.SECRET;
 
 class UserService {
+  async recoveryUser(data) {
+    const { email } = data;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error("User not exists.");
+    }
+
+    const newPass = generator.generate({
+      length: 8,
+      numbers: true,
+      symbols: true,
+    });
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(newPass, salt);
+
+    user.password = passwordHash;
+
+    await user.save();
+
+    transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: email,
+      subject: "Catalogo API - Recuperacão de Conta",
+      html: accountRecovery({ name: user.name, email, senha: newPass }),
+    });
+  }
   async createUser(data) {
     const { name, email, password } = data;
     const salt = await bcrypt.genSalt(10);
@@ -19,7 +49,7 @@ class UserService {
       from: process.env.SMTP_USER,
       to: email,
       subject: "Catalogo API Contas",
-      html: createdAccoutBodyEmail({ name, email, senha: password }),
+      html: accountCreated({ name, email, senha: password }),
     });
     return token;
   }
