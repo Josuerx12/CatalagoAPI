@@ -7,35 +7,6 @@ const generator = require("generate-password");
 const secret = process.env.SECRET;
 
 class UserService {
-  async recoveryUser(data) {
-    const { email } = data;
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      throw new Error("User not exists.");
-    }
-
-    const newPass = generator.generate({
-      length: 8,
-      numbers: true,
-      symbols: true,
-    });
-
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(newPass, salt);
-
-    user.password = passwordHash;
-
-    await user.save();
-
-    transporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: email,
-      subject: "Catalogo API - Recuperacão de Conta",
-      html: accountRecovery({ name: user.name, email, senha: newPass }),
-    });
-  }
   async createUser(data) {
     const { name, email, password } = data;
     const salt = await bcrypt.genSalt(10);
@@ -66,6 +37,64 @@ class UserService {
 
     const token = jwt.sign({ user }, secret);
     return token;
+  }
+  async recoveryUser(data) {
+    const { email } = data;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error("User not exists.");
+    }
+
+    const newPass = generator.generate({
+      length: 8,
+      numbers: true,
+      symbols: true,
+    });
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(newPass, salt);
+
+    user.password = passwordHash;
+
+    await user.save();
+
+    transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: email,
+      subject: "Catalogo API - Recuperacão de Conta",
+      html: accountRecovery({ name: user.name, email, senha: newPass }),
+    });
+  }
+  async getUser(user) {
+    const idUsuario = user._id;
+    const userRefreshed = await User.findById(idUsuario).select("--password");
+
+    return userRefreshed;
+  }
+  async editUser(data) {
+    const { user, email, password, name } = data;
+    const userRefreshed = await User.findById(user._id);
+
+    if (!email || !password || name) {
+      throw new Error("No data inserted.");
+    }
+
+    switch (data) {
+      case name:
+        userRefreshed.name = name;
+      case email:
+        userRefreshed.email = email;
+      case password:
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(password, salt);
+        userRefreshed.password = passwordHash;
+      default:
+        userRefreshed;
+    }
+
+    await userRefreshed.save();
   }
 }
 
