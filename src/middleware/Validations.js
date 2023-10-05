@@ -8,7 +8,7 @@ const validation = (req, res, next) => {
       payload: {
         status: "Failed",
         message: "Validatations error.",
-        errors: error.array().map((err) => ({ [err.path]: err.msg })),
+        errors: error.mapped(),
       },
     });
   }

@@ -1,7 +1,10 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const createdAccoutBodyEmail = require("../utils/emailBody");
+const transporter = require("../utils/emailTransporter");
 const secret = process.env.SECRET;
+
 class UserService {
   async createUser(data) {
     const { name, email, password } = data;
@@ -12,7 +15,12 @@ class UserService {
     const user = await User.findOne({ email: email }).select("--password");
 
     const token = jwt.sign({ user }, secret, { expiresIn: "12h" });
-    console.log(token);
+    transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: email,
+      subject: "Catalogo API Contas",
+      html: createdAccoutBodyEmail({ name, email, senha: password }),
+    });
     return token;
   }
   async login(data) {
@@ -27,7 +35,6 @@ class UserService {
     }
 
     const token = jwt.sign({ user }, secret);
-
     return token;
   }
 }
