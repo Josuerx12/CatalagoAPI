@@ -51,4 +51,34 @@ const loginValidations = [
   body("password").isString().withMessage("Password was required."),
 ];
 
-module.exports = { newUserValidations, loginValidations, recoveryValidation };
+const editValidations = [
+  body("name")
+    .optional()
+    .isString()
+    .withMessage("Name must be a string!")
+    .isLength({ min: 3, max: 30 }),
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("E-mail invalid!")
+    .custom(async (value) => {
+      const user = await User.findOne({ email: value });
+      if (user) {
+        throw new Error("E-mail already in use!");
+      }
+      return true;
+    }),
+  body("password")
+    .optional()
+    .isStrongPassword()
+    .withMessage(
+      "Password must be strong with 1 special character, 1 number and 1 uppercase letter."
+    ),
+];
+
+module.exports = {
+  newUserValidations,
+  editValidations,
+  loginValidations,
+  recoveryValidation,
+};

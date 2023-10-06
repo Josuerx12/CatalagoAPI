@@ -7,7 +7,7 @@ class AuthController {
     this.login = this.login.bind(this);
     this.recoveryAccount = this.recoveryAccount.bind(this);
     this.getUser = this.getUser.bind(this);
-    this.editUser = this.editUser.bind(this);
+    this.editTheUser = this.editTheUser.bind(this);
   }
 
   async newUser(req, res) {
@@ -88,7 +88,7 @@ class AuthController {
       });
     }
   }
-  async editUser(req, res) {
+  async editTheUser(req, res) {
     try {
       await this.user.editUser(req.body);
       return res.status(200).json({

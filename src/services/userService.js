@@ -27,7 +27,7 @@ class UserService {
   async login(data) {
     const { email, password } = data;
 
-    const user = await User.findOne({ email: email }).select("--password");
+    const user = await User.findOne({ email: email });
 
     const verifiedUser = await bcrypt.compare(password, user.password);
 
@@ -35,7 +35,17 @@ class UserService {
       throw new Error("Invalid credentials.");
     }
 
-    const token = jwt.sign({ user }, secret);
+    const token = jwt.sign(
+      {
+        user: {
+          name: user.name,
+          email: user.email,
+          photo: user.photo,
+          admin: user.admin,
+        },
+      },
+      secret
+    );
     return token;
   }
   async recoveryUser(data) {
@@ -77,21 +87,24 @@ class UserService {
     const { user, email, password, name } = data;
     const userRefreshed = await User.findById(user._id);
 
-    if (!email || !password || name) {
+    console.log(data);
+
+    if (!email && !password && !name) {
       throw new Error("No data inserted.");
     }
 
-    switch (data) {
-      case name:
-        userRefreshed.name = name;
-      case email:
-        userRefreshed.email = email;
-      case password:
-        const salt = await bcrypt.genSalt(10);
-        const passwordHash = await bcrypt.hash(password, salt);
-        userRefreshed.password = passwordHash;
-      default:
-        userRefreshed;
+    if (name) {
+      userRefreshed.name = name;
+    }
+
+    if (email) {
+      userRefreshed.email = email;
+    }
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(password, salt);
+      userRefreshed.password = passwordHash;
     }
 
     await userRefreshed.save();
