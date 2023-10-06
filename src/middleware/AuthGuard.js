@@ -32,7 +32,7 @@ function AuthGuard(req, res, next) {
         },
       });
     }
-    req.body = verifiedToken;
+    req.user = verifiedToken;
     next();
   } catch (error) {
     return res.status(401).json({

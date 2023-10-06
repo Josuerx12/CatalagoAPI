@@ -15,6 +15,13 @@ router.post("/register", newUserValidations, validation, auth.newUser);
 router.post("/login", loginValidations, validation, auth.login);
 router.post("/recovery", recoveryValidation, validation, auth.recoveryAccount);
 router.get("/user", AuthGuard, auth.getUser);
-router.patch("/edit", AuthGuard, editValidations, validation, auth.editTheUser);
+router.post(
+  "/editUser",
+
+  editValidations,
+  validation,
+  AuthGuard,
+  auth.editTheUser
+);
 
 module.exports = router;

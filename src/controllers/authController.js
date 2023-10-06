@@ -70,7 +70,7 @@ class AuthController {
   }
   async getUser(req, res) {
     try {
-      const user = await this.user.getUser(req.body.user);
+      const user = await this.user.getUser(req.user);
       return res.status(200).json({
         payload: {
           status: "Success",
@@ -90,7 +90,7 @@ class AuthController {
   }
   async editTheUser(req, res) {
     try {
-      await this.user.editUser(req.body);
+      await this.user.editUser(req.user, req.body);
       return res.status(200).json({
         payload: {
           status: "Success",

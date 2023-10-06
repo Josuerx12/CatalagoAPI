@@ -58,9 +58,8 @@ class UserService {
     }
 
     const newPass = generator.generate({
-      length: 8,
+      length: 10,
       numbers: true,
-      symbols: true,
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -77,17 +76,14 @@ class UserService {
       html: accountRecovery({ name: user.name, email, senha: newPass }),
     });
   }
-  async getUser(user) {
-    const idUsuario = user._id;
-    const userRefreshed = await User.findById(idUsuario).select("--password");
+  async getUser({ user }) {
+    const userRefreshed = await User.findById(user._id).select("-password");
 
     return userRefreshed;
   }
-  async editUser(data) {
-    const { user, email, password, name } = data;
+  async editUser({ user }, data) {
+    const { email, password, name } = data;
     const userRefreshed = await User.findById(user._id);
-
-    console.log(data);
 
     if (!email && !password && !name) {
       throw new Error("No data inserted.");
