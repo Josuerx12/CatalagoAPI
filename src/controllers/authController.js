@@ -1,4 +1,5 @@
 const UserService = require("../services/userService");
+const { updateAvatar } = require("../middleware/uploadAvatar");
 
 class AuthController {
   constructor() {
@@ -6,7 +7,7 @@ class AuthController {
     this.newUser = this.newUser.bind(this);
     this.login = this.login.bind(this);
     this.recoveryAccount = this.recoveryAccount.bind(this);
-    this.getUser = this.getUser.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
     this.editTheUser = this.editTheUser.bind(this);
   }
 
@@ -70,7 +71,7 @@ class AuthController {
   }
   async getUser(req, res) {
     try {
-      const user = await this.user.getUser(req.user);
+      const user = req.user;
       return res.status(200).json({
         payload: {
           status: "Success",
@@ -105,6 +106,45 @@ class AuthController {
           error: error.message.includes("No data inserted.")
             ? error.message
             : "Fail to edit your account, try again latter.",
+        },
+      });
+    }
+  }
+  async deleteUser(req, res) {
+    const { id } = req.params;
+    try {
+      await this.user.deleteUser(req.user, id);
+      return res.status(200).json({
+        payload: {
+          status: "Success",
+          message: `User ${id} deleted with success.`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(501).json({
+        payload: {
+          status: "Failed",
+          error: error.message,
+        },
+      });
+    }
+  }
+  async updateUserAvatar(req, res) {
+    try {
+      await updateAvatar(req.file, req.user);
+      return res.status(200).json({
+        payload: {
+          status: "Success",
+          message: "Photo uploaded with success.",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(501).json({
+        payload: {
+          status: "Failed",
+          error: error.message,
         },
       });
     }

@@ -56,7 +56,10 @@ const editValidations = [
     .optional()
     .isString()
     .withMessage("Name must be a string!")
-    .isLength({ min: 3, max: 30 }),
+    .isLength({ min: 3, max: 30 })
+    .withMessage(
+      "Name must have more than 3 characters and less than 30 characters."
+    ),
   body("email")
     .optional()
     .isEmail()

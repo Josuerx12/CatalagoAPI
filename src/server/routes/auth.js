@@ -8,6 +8,7 @@ const {
 const validation = require("../../middleware/Validations");
 const AuthGuard = require("../../middleware/AuthGuard");
 const AuthController = require("../../controllers/authController");
+const { updateAvatar, upload } = require("../../middleware/uploadAvatar");
 
 const auth = new AuthController();
 
@@ -15,13 +16,19 @@ router.post("/register", newUserValidations, validation, auth.newUser);
 router.post("/login", loginValidations, validation, auth.login);
 router.post("/recovery", recoveryValidation, validation, auth.recoveryAccount);
 router.get("/user", AuthGuard, auth.getUser);
-router.post(
+router.patch(
   "/editUser",
-
   editValidations,
   validation,
   AuthGuard,
   auth.editTheUser
+);
+router.delete("/user/:id", AuthGuard, auth.deleteUser);
+router.patch(
+  "/user/avatar",
+  AuthGuard,
+  upload.single("user-avatar"),
+  auth.updateUserAvatar
 );
 
 module.exports = router;

@@ -1,47 +1,28 @@
 const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
+const UserModel = require("../models/userModel");
 
 function AuthGuard(req, res, next) {
   const header = req.headers["authorization"]; // Usar colchetes, não parênteses
-  if (!header) {
-    return res.status(401).json({
-      payload: {
-        status: "Failed",
-        message: "Authorization header missing.",
-      },
-    });
-  }
-
   const token = header.split(" ")[1];
-  if (!token) {
-    return res.status(401).json({
-      payload: {
-        status: "Failed",
-        message: "Token not provided in Authorization header.",
-      },
-    });
-  }
 
-  try {
-    const verifiedToken = jwt.verify(token, secret);
-    if (!verifiedToken) {
-      return res.status(401).json({
-        payload: {
-          status: "Failed",
-          message: "Invalid token, try to renew your session.",
-        },
-      });
-    }
-    req.user = verifiedToken;
-    next();
-  } catch (error) {
-    return res.status(401).json({
-      payload: {
-        status: "Failed",
-        message: "Invalid token, try to renew your session.",
-      },
+  if (token) {
+    jwt.verify(token, secret, async (err, decodedToken) => {
+      if (err) {
+        console.log(err);
+        res.status(401).json({ message: "Invalid Token" });
+      } else {
+        const user = await UserModel.findById(decodedToken.id).select(
+          "-password"
+        );
+        req.user = user; // Adicione o usuário à solicitação
+        next(); // Continue com a solicitação
+      }
+    });
+  } else {
+    res.status(401).json({
+      message: "Você precisa estar autenticado para acessar esta rota",
     });
   }
 }
-
 module.exports = AuthGuard;
