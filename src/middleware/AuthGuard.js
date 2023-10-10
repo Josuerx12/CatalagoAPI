@@ -10,7 +10,7 @@ function AuthGuard(req, res, next) {
     jwt.verify(token, secret, async (err, decodedToken) => {
       if (err) {
         console.log(err);
-        res.status(401).json({ message: "Invalid Token" });
+        return res.status(401).json({ message: "Invalid Token" });
       } else {
         const user = await UserModel.findById(decodedToken.id).select(
           "-password"

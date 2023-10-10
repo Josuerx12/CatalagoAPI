@@ -1,13 +1,30 @@
-const ProductModel = require("../models/productsModel")
-class ProductService{
-  async createProduct(req, res){
-    const {admin} = req.user
-    const {}
-    if(!admin){
-      throw new Error("You are not allowed to create a new product.")
+const ProductModel = require("../models/productsModel");
+class ProductService {
+  async newProduct(product, photos) {
+    const { name, category, stock, unit, value, description } = product;
+    if (photos) {
+      const photosArray = photos.map((photo) => ({ key: photo.key }));
+      const res = await ProductModel.create({
+        name,
+        category,
+        stock,
+        unit,
+        photos: photosArray,
+        value,
+        description,
+      });
+      return res;
     }
-
-
-
+    const res = await ProductModel.create({
+      name,
+      category,
+      stock,
+      unit,
+      value,
+      description,
+    });
+    return res;
   }
 }
+
+module.exports = ProductService;

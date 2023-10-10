@@ -23,6 +23,9 @@ const upload = multer({
 });
 
 async function updateAvatar(file, user) {
+  if (!file) {
+    throw new Error("No file selected.");
+  }
   const { key } = file;
   const { id } = user;
 

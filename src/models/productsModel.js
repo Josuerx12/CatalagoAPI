@@ -1,15 +1,15 @@
-const { Schema, Model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const producSchema = new Schema({
   name: String,
   category: String,
   stock: { type: Number, default: null },
   unit: { type: String, enum: ["UN", "KG", "TON", "M"], default: "UN" },
-  photos: { type: [{ photo: string }], default: null },
+  photos: { type: [{ photo: { type: String } }], default: null },
   value: Number,
   description: String,
 });
 
-const productModel = Model("Product", producSchema);
+const productModel = model("Product", producSchema);
 
 module.exports = productModel;
