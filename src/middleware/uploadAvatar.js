@@ -27,11 +27,10 @@ async function updateAvatar(file, user) {
   const { id } = user;
 
   const User = await UserModel.findById(id);
-
   if (User.photo) {
     const deletePhoto = new DeleteObjectCommand({
-      bucket: "userphotoscatalogo",
-      key: User.photo,
+      Bucket: "userphotoscatalogo",
+      Key: User.photo,
     });
     await s3.send(deletePhoto);
   }
