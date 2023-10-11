@@ -7,8 +7,8 @@ class ProductController {
     this.editProduct = this.editProduct.bind(this);
     this.getProduct = this.getProduct.bind(this);
     this.getProducts = this.getProducts.bind(this);
-    this.addPhotoToProduct = this.addPhotoToProduct(this);
-    this.deleteProductPhoto = this.deleteProductPhoto(this);
+    this.addPhotoToProduct = this.addPhotoToProduct.bind(this);
+    this.deleteProductPhoto = this.deleteProductPhoto.bind(this);
   }
 
   async createProduct(req, res) {
@@ -113,10 +113,8 @@ class ProductController {
     }
   }
   async addPhotoToProduct(req, res) {
-    const { productId } = req.params;
-
     try {
-      const product = await this.product.addPhoto(productId, req.files);
+      const product = await this.product.addPhoto(req.params, req.files);
       return res.status(201).json({
         payload: {
           status: "Success",

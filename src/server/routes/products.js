@@ -30,6 +30,5 @@ router.delete(
   AuthAdminGuard,
   product.deleteProductPhoto
 );
-
 router.delete("/:id", AuthAdminGuard, product.deleteProduct);
 module.exports = router;

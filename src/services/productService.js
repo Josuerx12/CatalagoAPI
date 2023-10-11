@@ -139,19 +139,27 @@ class ProductService {
     }
 
     const newPhotosArray = product.photos.filter(
-      (photo) => photo._id !== photoId
+      (photo) => photo._id.toString() !== photoId
     );
 
-    const photo = product.photos.filter((photo) => photoId === photo._id);
+    const photo = product.photos.filter(
+      (photo) => photoId === photo._id.toString()
+    );
+
+    if (newPhotosArray.length < 0) {
+      product.photos = null;
+    }
 
     product.photos = newPhotosArray;
 
     const deleteS3Options = {
-      bucket: "productphotoscatalogo",
-      key: photo.photo,
+      Bucket: "productphotoscatalogo",
+      Key: photo[0].photo,
     };
 
-    await s3.send(DeleteObjectCommand(deleteS3Options));
+    const deleteCommand = new DeleteObjectCommand(deleteS3Options);
+
+    await s3.send(deleteCommand);
 
     await product.save();
     return product;
