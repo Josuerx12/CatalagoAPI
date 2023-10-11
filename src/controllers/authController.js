@@ -1,5 +1,5 @@
 const UserService = require("../services/userService");
-const { updateAvatar } = require("../middleware/uploadAvatar");
+const { updateAvatar } = require("../middleware/uploadPhotos");
 
 class AuthController {
   constructor() {

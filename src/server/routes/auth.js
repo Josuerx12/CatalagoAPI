@@ -8,7 +8,7 @@ const {
 const validation = require("../../middleware/Validations");
 const AuthGuard = require("../../middleware/AuthGuard");
 const AuthController = require("../../controllers/authController");
-const { updateAvatar, upload } = require("../../middleware/uploadAvatar");
+const { updateAvatar, uploadAvatar } = require("../../middleware/uploadPhotos");
 
 const auth = new AuthController();
 
@@ -27,7 +27,7 @@ router.delete("/user/:id", AuthGuard, auth.deleteUser);
 router.patch(
   "/user/avatar",
   AuthGuard,
-  upload.single("user-avatar"),
+  uploadAvatar.single("user-avatar"),
   auth.updateUserAvatar
 );
 
