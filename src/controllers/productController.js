@@ -2,16 +2,9 @@ const ProductService = require("../services/productService");
 class ProductController {
   constructor() {
     this.product = new ProductService();
-    this.createProduct = this.createProduct.bind(this);
-    this.deleteProduct = this.deleteProduct.bind(this);
-    this.editProduct = this.editProduct.bind(this);
-    this.getProduct = this.getProduct.bind(this);
-    this.getProducts = this.getProducts.bind(this);
-    this.addPhotoToProduct = this.addPhotoToProduct.bind(this);
-    this.deleteProductPhoto = this.deleteProductPhoto.bind(this);
   }
 
-  async createProduct(req, res) {
+  createProduct = async (req, res) => {
     try {
       const product = await this.product.new(req.body, req.files);
       return res.status(201).json({
@@ -30,8 +23,8 @@ class ProductController {
         },
       });
     }
-  }
-  async deleteProduct(req, res) {
+  };
+  deleteProduct = async (req, res) => {
     const { id } = req.params;
     try {
       const product = await this.product.delete(id);
@@ -51,8 +44,8 @@ class ProductController {
         },
       });
     }
-  }
-  async editProduct(req, res) {
+  };
+  editProduct = async (req, res) => {
     const { id } = req.params;
     try {
       const product = await this.product.edit(id, req.body, req.files);
@@ -72,8 +65,8 @@ class ProductController {
         },
       });
     }
-  }
-  async getProducts(req, res) {
+  };
+  getProducts = async (req, res) => {
     try {
       const products = await this.product.get();
       return res.status(201).json({
@@ -91,8 +84,8 @@ class ProductController {
         },
       });
     }
-  }
-  async getProduct(req, res) {
+  };
+  getProduct = async (req, res) => {
     const { id } = req.params;
     try {
       const product = await this.product.getById(id);
@@ -111,14 +104,15 @@ class ProductController {
         },
       });
     }
-  }
-  async addPhotoToProduct(req, res) {
+  };
+  addPhotoToProduct = async (req, res) => {
+    const { id } = req.params;
     try {
-      const product = await this.product.addPhoto(req.params, req.files);
+      const product = await this.product.addPhoto(id, req.files);
       return res.status(201).json({
         payload: {
           status: "Success",
-          message: `Photo(s) added with success to the product id: ${productId}`,
+          message: `Photo(s) added with success to the product id: ${id}`,
           product,
         },
       });
@@ -131,8 +125,8 @@ class ProductController {
         },
       });
     }
-  }
-  async deleteProductPhoto(req, res) {
+  };
+  deleteProductPhoto = async (req, res) => {
     const { productId, photoId } = req.params;
 
     try {
@@ -153,7 +147,7 @@ class ProductController {
         },
       });
     }
-  }
+  };
 }
 
 module.exports = ProductController;

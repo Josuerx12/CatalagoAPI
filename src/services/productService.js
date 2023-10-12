@@ -42,43 +42,33 @@ class ProductService {
     return product;
   }
   async edit(id, details, photos) {
+    if (!photos && !details) {
+      throw new Error("No data inserted.");
+    }
     const product = await ProductModel.findById(id);
     if (!product) {
       throw new Error(`Product id: ${id} not found!`);
     }
     const { name, category, stock, unit, value, description } = details;
 
-    if (name) {
-      product.name = name;
-    } else if (category) {
-      product.category = category;
-    } else if (stock) {
-      product.stock = stock;
-    } else if (unit) {
-      product.unit = unit;
-    } else if (value) {
-      product.value = value;
-    } else if (description) {
-      product.description = description;
-    }
+    if (name) product.name = name;
+
+    if (category) product.category = category;
+
+    if (stock) product.stock = stock;
+
+    if (unit) product.unit = unit;
+
+    if (value) product.value = value;
+
+    if (description) product.description = description;
 
     if (photos) {
       const photosArray = photos.map((photo) => ({ photo: photo.key }));
-      if (name) {
-        product.name = name;
-      } else if (category) {
-        product.category = category;
-      } else if (stock) {
-        product.stock = stock;
-      } else if (unit) {
-        product.unit = unit;
-      } else if (value) {
-        product.value = value;
-      } else if (description) {
-        product.description = description;
-      }
-      product.photos.push(photosArray);
+      product.photos = [...product.photos, ...photosArray];
     }
+
+    await product.save();
     return product;
   }
   async delete(id) {
@@ -112,6 +102,7 @@ class ProductService {
       throw new Error("No photo selected.");
     }
     const product = await ProductModel.findById(id);
+
     if (!product) {
       throw new Error(`Product id: ${id} not found!`);
     }
@@ -122,7 +113,7 @@ class ProductService {
       product.photos = newPhotos;
     }
 
-    product.photos.push(newPhotos);
+    product.photos = [...product.photos, ...newPhotos];
 
     await product.save();
     return product;
