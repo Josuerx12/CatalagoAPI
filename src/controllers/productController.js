@@ -105,27 +105,6 @@ class ProductController {
       });
     }
   };
-  addPhotoToProduct = async (req, res) => {
-    const { id } = req.params;
-    try {
-      const product = await this.product.addPhoto(id, req.files);
-      return res.status(201).json({
-        payload: {
-          status: "Success",
-          message: `Photo(s) added with success to the product id: ${id}`,
-          product,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(401).json({
-        payload: {
-          status: "Failed",
-          message: error.message,
-        },
-      });
-    }
-  };
   deleteProductPhoto = async (req, res) => {
     const { productId, photoId } = req.params;
 

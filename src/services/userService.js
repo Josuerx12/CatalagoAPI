@@ -6,6 +6,8 @@ const transporter = require("../utils/emailTransporter");
 const generator = require("generate-password");
 const UserModel = require("../models/userModel");
 const secret = process.env.SECRET;
+const s3 = require("../utils/s3Auth");
+const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 class UserService {
   async createUser(data) {
@@ -73,10 +75,10 @@ class UserService {
       html: accountRecovery({ name: user.name, email, senha: newPass }),
     });
   }
-  async editUser(user, data) {
+  async editUser(user, data, photo) {
     const { email, password, name } = data;
     const userRefreshed = await User.findById(user._id);
-    if (!email && !password && !name) {
+    if (!data) {
       throw new Error("No data inserted.");
     }
 
@@ -94,13 +96,28 @@ class UserService {
       userRefreshed.password = passwordHash;
     }
 
+    if (photo) {
+      const { key } = photo;
+
+      if (userRefreshed.photo) {
+        const deleteOptions = {
+          Bucket: "userphotoscatalogo",
+          Key: userRefreshed.photo,
+        };
+
+        const command = new DeleteObjectCommand(deleteOptions);
+        await s3.send(command);
+      }
+
+      userRefreshed.photo = key;
+    }
+
     await userRefreshed.save();
   }
   async deleteUser(user, id) {
     const userToDelete = await UserModel.findById(id);
 
     if (!userToDelete) throw new Error(`User ${id} not exists.`);
-    if (!user.admin) throw new Error("You are not allowed to delete an user.");
 
     await UserModel.findByIdAndDelete(id);
   }

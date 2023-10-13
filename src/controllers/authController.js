@@ -4,14 +4,9 @@ const { updateAvatar } = require("../middleware/uploadPhotos");
 class AuthController {
   constructor() {
     this.user = new UserService();
-    this.newUser = this.newUser.bind(this);
-    this.login = this.login.bind(this);
-    this.recoveryAccount = this.recoveryAccount.bind(this);
-    this.deleteUser = this.deleteUser.bind(this);
-    this.editTheUser = this.editTheUser.bind(this);
   }
 
-  async newUser(req, res) {
+  newUser = async (req, res) => {
     try {
       const token = await this.user.createUser(req.body);
       return res.status(201).json({
@@ -27,7 +22,7 @@ class AuthController {
         payload: { status: "Failed", error: "Failed to create a new user." },
       });
     }
-  }
+  };
   async login(req, res) {
     try {
       const token = await this.user.login(req.body);
@@ -48,7 +43,7 @@ class AuthController {
       });
     }
   }
-  async recoveryAccount(req, res) {
+  recoveryAccount = async (req, res) => {
     try {
       await this.user.recoveryUser(req.body);
       return res.status(200).json({
@@ -68,8 +63,8 @@ class AuthController {
         },
       });
     }
-  }
-  async getUser(req, res) {
+  };
+  getUser = async (req, res) => {
     try {
       const user = req.user;
       return res.status(200).json({
@@ -88,10 +83,10 @@ class AuthController {
         },
       });
     }
-  }
-  async editTheUser(req, res) {
+  };
+  editTheUser = async (req, res) => {
     try {
-      await this.user.editUser(req.user, req.body);
+      await this.user.editUser(req.user, req.body, req.file);
       return res.status(200).json({
         payload: {
           status: "Success",
@@ -109,8 +104,8 @@ class AuthController {
         },
       });
     }
-  }
-  async deleteUser(req, res) {
+  };
+  deleteUser = async (req, res) => {
     const { id } = req.params;
     try {
       await this.user.deleteUser(req.user, id);
@@ -129,26 +124,7 @@ class AuthController {
         },
       });
     }
-  }
-  async updateUserAvatar(req, res) {
-    try {
-      await updateAvatar(req.file, req.user);
-      return res.status(200).json({
-        payload: {
-          status: "Success",
-          message: "Photo uploaded with success.",
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(501).json({
-        payload: {
-          status: "Failed",
-          error: error.message,
-        },
-      });
-    }
-  }
+  };
 }
 
 module.exports = AuthController;

@@ -31,6 +31,10 @@ function AuthAdminGuard(req, res, next) {
         next();
       }
     });
+  } else {
+    return res
+      .status(401)
+      .json("You are note signed or your token is invalid.");
   }
 }
 

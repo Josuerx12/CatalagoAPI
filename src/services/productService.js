@@ -97,27 +97,6 @@ class ProductService {
 
     return productDeleted;
   }
-  async addPhoto(id, photos) {
-    if (!photos) {
-      throw new Error("No photo selected.");
-    }
-    const product = await ProductModel.findById(id);
-
-    if (!product) {
-      throw new Error(`Product id: ${id} not found!`);
-    }
-
-    const newPhotos = photos.map((photo) => ({ photo: photo.key }));
-
-    if (!product.photos) {
-      product.photos = newPhotos;
-    }
-
-    product.photos = [...product.photos, ...newPhotos];
-
-    await product.save();
-    return product;
-  }
   async deletePhotoById(productId, photoId) {
     const product = await ProductModel.findById(productId);
 

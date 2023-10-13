@@ -14,12 +14,6 @@ router.post(
   product.createProduct
 );
 router.patch(
-  "/:id/addPhoto",
-  AuthAdminGuard,
-  uploadProductPics.array("product-pics"),
-  product.addPhotoToProduct
-);
-router.patch(
   "/:id",
   AuthAdminGuard,
   uploadProductPics.array("product-pics"),
