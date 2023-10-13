@@ -24,4 +24,4 @@ const uploadProductPics = multer({
   }),
 });
 
-module.exports = { uploadAvatar, uploadProductPics, updateAvatar };
+module.exports = { uploadAvatar, uploadProductPics };

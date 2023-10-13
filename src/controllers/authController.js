@@ -23,7 +23,7 @@ class AuthController {
       });
     }
   };
-  async login(req, res) {
+  login = async (req, res) => {
     try {
       const token = await this.user.login(req.body);
       return res.status(200).json({
@@ -42,7 +42,7 @@ class AuthController {
         },
       });
     }
-  }
+  };
   recoveryAccount = async (req, res) => {
     try {
       await this.user.recoveryUser(req.body);

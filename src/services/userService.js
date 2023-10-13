@@ -48,6 +48,9 @@ class UserService {
     return token;
   }
   async recoveryUser(data) {
+    if (!data) {
+      throw new Error("E-mail to recover is required.");
+    }
     const { email } = data;
 
     const user = await User.findOne({ email });
