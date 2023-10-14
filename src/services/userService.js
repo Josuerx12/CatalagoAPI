@@ -71,12 +71,19 @@ class UserService {
 
     await user.save();
 
-    transporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: email,
-      subject: "Catalogo API - Recuperacão de Conta",
-      html: accountRecovery({ name: user.name, email, senha: newPass }),
-    });
+    transporter
+      .sendMail({
+        from: process.env.SMTP_USER,
+        to: email,
+        subject: "Catalogo API - Recuperacão de Conta",
+        html: accountRecovery({ name: user.name, email, senha: newPass }),
+      })
+      .then(() => {
+        console.log("E-mail enviado com sucesso.");
+      })
+      .catch((erro) =>
+        console.log("Falha ao enviar o E-mail: " + erro.message)
+      );
   }
   async editUser(user, data, photo) {
     const { email, password, name } = data;
@@ -104,7 +111,7 @@ class UserService {
 
       if (userRefreshed.photo) {
         const deleteOptions = {
-          Bucket: "userphotoscatalogo",
+          Bucket: process.env.S3_PROFILE_PIC,
           Key: userRefreshed.photo,
         };
 
@@ -121,6 +128,16 @@ class UserService {
     const userToDelete = await UserModel.findById(id);
 
     if (!userToDelete) throw new Error(`User ${id} not exists.`);
+
+    if (userToDelete.photo) {
+      const deleteOptions = {
+        Bucket: process.env.S3_PROFILE_PIC,
+        Key: userToDelete.photo,
+      };
+
+      const command = new DeleteObjectCommand(deleteOptions);
+      await s3.send(command);
+    }
 
     await UserModel.findByIdAndDelete(id);
   }
