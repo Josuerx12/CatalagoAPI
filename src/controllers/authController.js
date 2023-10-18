@@ -1,5 +1,4 @@
 const UserService = require("../services/userService");
-const { updateAvatar } = require("../middleware/uploadPhotos");
 
 class AuthController {
   constructor() {
@@ -19,7 +18,10 @@ class AuthController {
     } catch (error) {
       console.log(error);
       return res.status(401).json({
-        payload: { status: "Failed", errors: "Failed to create a new user." },
+        payload: {
+          status: "Failed",
+          errors: { msg: "Failed to create a new user." },
+        },
       });
     }
   };
@@ -38,7 +40,7 @@ class AuthController {
       return res.status(401).json({
         payload: {
           status: "Failed",
-          errors: error.message,
+          errors: { msg: error.message },
         },
       });
     }
@@ -57,9 +59,11 @@ class AuthController {
       return res.status(501).json({
         payload: {
           status: "Failed",
-          errors: error.message.includes("User not exists.")
-            ? error.message
-            : "Fail to recovery your account, try again latter.",
+          errors: {
+            msg: error.message.includes("User not exists.")
+              ? error.message
+              : "Fail to recovery your account, try again latter.",
+          },
         },
       });
     }
@@ -79,7 +83,7 @@ class AuthController {
       return res.status(501).json({
         payload: {
           status: "Failed",
-          errors: "Fail to get the refreshed user.",
+          errors: { msg: "Fail to get the refreshed user." },
         },
       });
     }
@@ -98,9 +102,11 @@ class AuthController {
       return res.status(501).json({
         payload: {
           status: "Failed",
-          errors: error.message.includes("No data inserted.")
-            ? error.message
-            : "Fail to edit your account, try again latter.",
+          errors: {
+            msg: error.message.includes("No data inserted.")
+              ? error.message
+              : "Fail to edit your account, try again latter.",
+          },
         },
       });
     }
@@ -120,7 +126,7 @@ class AuthController {
       return res.status(501).json({
         payload: {
           status: "Failed",
-          errors: error.message,
+          errors: { msg: error.message },
         },
       });
     }

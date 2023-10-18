@@ -19,7 +19,7 @@ class ProductController {
       return res.status(401).json({
         payload: {
           status: "Failed",
-          message: "Fail to create the new product, try again latter.",
+          errors: { msg: "Fail to create the new product, try again latter." },
         },
       });
     }
@@ -31,7 +31,7 @@ class ProductController {
       return res.status(201).json({
         payload: {
           status: "Success",
-          message: "Product deleted with success.",
+          errors: { msg: "Product deleted with success." },
           product,
         },
       });
@@ -40,7 +40,7 @@ class ProductController {
       return res.status(401).json({
         payload: {
           status: "Failed",
-          message: error.message,
+          errors: { msg: error.message },
         },
       });
     }
@@ -61,7 +61,7 @@ class ProductController {
       return res.status(401).json({
         payload: {
           status: "Failed",
-          message: error.message,
+          errors: { msg: error.message },
         },
       });
     }
@@ -80,7 +80,7 @@ class ProductController {
       return res.status(401).json({
         payload: {
           status: "Failed",
-          message: `Fail to get the products.`,
+          errors: { msg: `Fail to get the products.` },
         },
       });
     }
@@ -100,7 +100,7 @@ class ProductController {
       return res.status(401).json({
         payload: {
           status: "Failed",
-          message: error.message,
+          errors: { msg: error.message },
         },
       });
     }
@@ -122,7 +122,7 @@ class ProductController {
       return res.status(401).json({
         payload: {
           status: "Failed",
-          message: error.message,
+          errors: { msg: error.message },
         },
       });
     }
