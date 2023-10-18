@@ -88,7 +88,7 @@ class UserService {
   async editUser(user, data, photo) {
     const { email, password, name } = data;
     const userRefreshed = await User.findById(user._id);
-    if (!data) {
+    if (!data && !photo) {
       throw new Error("No data inserted.");
     }
 
