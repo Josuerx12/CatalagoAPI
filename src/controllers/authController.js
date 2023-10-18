@@ -19,7 +19,7 @@ class AuthController {
     } catch (error) {
       console.log(error);
       return res.status(401).json({
-        payload: { status: "Failed", error: "Failed to create a new user." },
+        payload: { status: "Failed", errors: "Failed to create a new user." },
       });
     }
   };
@@ -38,7 +38,7 @@ class AuthController {
       return res.status(401).json({
         payload: {
           status: "Failed",
-          error: error.message,
+          errors: error.message,
         },
       });
     }
@@ -57,7 +57,7 @@ class AuthController {
       return res.status(501).json({
         payload: {
           status: "Failed",
-          error: error.message.includes("User not exists.")
+          errors: error.message.includes("User not exists.")
             ? error.message
             : "Fail to recovery your account, try again latter.",
         },
@@ -79,7 +79,7 @@ class AuthController {
       return res.status(501).json({
         payload: {
           status: "Failed",
-          error: "Fail to get the refreshed user.",
+          errors: "Fail to get the refreshed user.",
         },
       });
     }
@@ -98,7 +98,7 @@ class AuthController {
       return res.status(501).json({
         payload: {
           status: "Failed",
-          error: error.message.includes("No data inserted.")
+          errors: error.message.includes("No data inserted.")
             ? error.message
             : "Fail to edit your account, try again latter.",
         },
@@ -120,7 +120,7 @@ class AuthController {
       return res.status(501).json({
         payload: {
           status: "Failed",
-          error: error.message,
+          errors: error.message,
         },
       });
     }
