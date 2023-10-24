@@ -130,6 +130,29 @@ class AuthController {
       });
     }
   };
+  adminEditUser = async (req, res) => {
+    try {
+      await this.user.adminEditUser(req.params, req.body, req.file)
+      return res.status(200).json({
+        payload: {
+          status: "Success",
+          message: "User edited with success.",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(501).json({
+        payload: {
+          status: "Failed",
+          errors: {
+            msg: error.message.includes("No data inserted.")
+              ? error.message
+              : "Fail to edit your account, try again latter.",
+          },
+        },
+      });
+    }
+  }
   deleteUser = async (req, res) => {
     const { id } = req.params;
     try {

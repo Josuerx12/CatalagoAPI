@@ -26,6 +26,7 @@ router.patch(
   uploadAvatar.single("user-avatar"),
   auth.editTheUser
 );
+router.patch("/editUser/:id", editValidations, validation, AuthAdminGuard, uploadAvatar.single("user-avatar"), auth.adminEditUser)
 router.delete("/user/:id", AuthAdminGuard, auth.deleteUser);
 
 module.exports = router;

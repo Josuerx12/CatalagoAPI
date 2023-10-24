@@ -128,6 +128,46 @@ class UserService {
 
     await userRefreshed.save();
   }
+  async adminEditUser(params, data, photo) {
+    const {id} = params
+    const { email, password, name } = data;
+    const userRefreshed = await User.findById(id);
+    if (!data && !photo) {
+      throw new Error("No data inserted.");
+    }
+
+    if (name) {
+      userRefreshed.name = name;
+    }
+
+    if (email) {
+      userRefreshed.email = email;
+    }
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(password, salt);
+      userRefreshed.password = passwordHash;
+    }
+
+    if (photo) {
+      const { key } = photo;
+
+      if (userRefreshed.photo) {
+        const deleteOptions = {
+          Bucket: process.env.S3_PROFILE_PIC,
+          Key: userRefreshed.photo,
+        };
+
+        const command = new DeleteObjectCommand(deleteOptions);
+        await s3.send(command);
+      }
+
+      userRefreshed.photo = key;
+    }
+
+    await userRefreshed.save();
+  }
   async deleteUser(user, id) {
     const userToDelete = await User.findById(id);
 
