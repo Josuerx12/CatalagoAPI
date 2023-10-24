@@ -10,7 +10,7 @@ const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 class UserService {
   async getUsers() {
-    const users = await User.find().select("--password")
+    const users = await User.find().select("-password")
 
     return users
   }
@@ -20,7 +20,7 @@ class UserService {
     const passwordHash = await bcrypt.hash(password, salt);
 
     await User.create({ name, email, password: passwordHash });
-    const user = await User.findOne({ email: email }).select("--password");
+    const user = await User.findOne({ email: email }).select("-password");
 
     const token = jwt.sign({ id: user._id }, secret, { expiresIn: "12h" });
     transporter.sendMail({
