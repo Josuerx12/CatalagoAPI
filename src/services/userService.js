@@ -4,12 +4,16 @@ const jwt = require("jsonwebtoken");
 const { accountCreated, accountRecovery } = require("../utils/emailBody");
 const transporter = require("../utils/emailTransporter");
 const generator = require("generate-password");
-const UserModel = require("../models/userModel");
 const secret = process.env.SECRET;
 const s3 = require("../utils/s3Auth");
 const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 class UserService {
+  async getUsers() {
+    const users = await User.find().select("--password")
+
+    return users
+  }
   async createUser(data) {
     const { name, email, password } = data;
     const salt = await bcrypt.genSalt(10);
@@ -125,7 +129,7 @@ class UserService {
     await userRefreshed.save();
   }
   async deleteUser(user, id) {
-    const userToDelete = await UserModel.findById(id);
+    const userToDelete = await User.findById(id);
 
     if (!userToDelete) throw new Error(`User ${id} not exists.`);
 
@@ -139,7 +143,7 @@ class UserService {
       await s3.send(command);
     }
 
-    await UserModel.findByIdAndDelete(id);
+    await User.findByIdAndDelete(id);
   }
 }
 
