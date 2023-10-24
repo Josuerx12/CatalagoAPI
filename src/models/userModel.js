@@ -5,7 +5,7 @@ const userSchema = new Schema({
   password: { type: String },
   photo: { type: String, default: null },
   admin: { type: Boolean, default: false },
-});
+}, {timestamps: true});
 
 const UserModel = model("User", userSchema);
 

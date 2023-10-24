@@ -8,7 +8,7 @@ const producSchema = new Schema({
   photos: { type: [{ photo: { type: String } }], default: null },
   value: Number,
   description: String,
-});
+}, {timestamps: true});
 
 const productModel = model("Product", producSchema);
 
