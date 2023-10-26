@@ -129,9 +129,8 @@ class UserService {
     await userRefreshed.save();
   }
   async adminEditUser(params, data, photo) {
-    const {id} = params
-    const { email, password, name } = data;
-    const userRefreshed = await User.findById(id);
+    const { email, password, name, admin } = data;
+    const userRefreshed = await User.findById(params.id);
     if (!data && !photo) {
       throw new Error("No data inserted.");
     }
@@ -148,6 +147,10 @@ class UserService {
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(password, salt);
       userRefreshed.password = passwordHash;
+    }
+
+    if(admin){
+      userRefreshed.admin = admin
     }
 
     if (photo) {
