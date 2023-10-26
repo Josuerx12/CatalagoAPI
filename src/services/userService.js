@@ -150,7 +150,7 @@ class UserService {
     }
 
     if(admin){
-      userRefreshed.admin = admin
+      userRefreshed.admin = admin === "true" ? true : false
     }
 
     if (photo) {
