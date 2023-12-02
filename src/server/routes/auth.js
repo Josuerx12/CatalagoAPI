@@ -17,7 +17,7 @@ router.post("/register", newUserValidations, validation, auth.newUser);
 router.post("/login", loginValidations, validation, auth.login);
 router.post("/recovery", recoveryValidation, validation, auth.recoveryAccount);
 router.get("/user", AuthGuard, auth.getUser);
-router.get("/users", AuthAdminGuard, auth.getUsers);
+router.get("/users", AuthGuard, AuthAdminGuard, auth.getUsers);
 router.patch(
   "/editUser",
   editValidations,
