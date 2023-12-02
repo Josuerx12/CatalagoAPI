@@ -27,6 +27,7 @@ router.patch(
   auth.editTheUser
 );
 router.delete("/user/:id", AuthGuard, AuthAdminGuard, auth.deleteUser);
+router.post("/user/new", AuthGuard, AuthAdminGuard, auth.adminCreateUser);
 router.patch(
   "/editUser/:id",
   editValidations,

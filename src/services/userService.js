@@ -10,9 +10,9 @@ const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 class UserService {
   async getUsers() {
-    const users = await User.find().select("-password")
+    const users = await User.find().select("-password");
 
-    return users
+    return users;
   }
   async createUser(data) {
     const { name, email, password } = data;
@@ -20,6 +20,23 @@ class UserService {
     const passwordHash = await bcrypt.hash(password, salt);
 
     await User.create({ name, email, password: passwordHash });
+    const user = await User.findOne({ email: email }).select("-password");
+
+    const token = jwt.sign({ id: user._id }, secret, { expiresIn: "12h" });
+    transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: email,
+      subject: "Catalogo API Contas",
+      html: accountCreated({ name, email, senha: password }),
+    });
+    return token;
+  }
+  async adminCreateNewUser(data) {
+    const { name, email, password, admin } = data;
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    await User.create({ name, email, password: passwordHash, admin });
     const user = await User.findOne({ email: email }).select("-password");
 
     const token = jwt.sign({ id: user._id }, secret, { expiresIn: "12h" });
@@ -149,8 +166,8 @@ class UserService {
       userRefreshed.password = passwordHash;
     }
 
-    if(admin){
-      userRefreshed.admin = admin === "true" ? true : false
+    if (admin) {
+      userRefreshed.admin = admin === "true" ? true : false;
     }
 
     if (photo) {
