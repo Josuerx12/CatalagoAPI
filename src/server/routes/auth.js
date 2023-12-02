@@ -17,6 +17,7 @@ router.post("/register", newUserValidations, validation, auth.newUser);
 router.post("/login", loginValidations, validation, auth.login);
 router.post("/recovery", recoveryValidation, validation, auth.recoveryAccount);
 router.get("/user", AuthGuard, auth.getUser);
+router.get("/users", AuthAdminGuard, auth.getUsers);
 router.patch(
   "/editUser",
   editValidations,
@@ -26,5 +27,14 @@ router.patch(
   auth.editTheUser
 );
 router.delete("/user/:id", AuthGuard, AuthAdminGuard, auth.deleteUser);
+router.patch(
+  "/editUser/:id",
+  editValidations,
+  validation,
+  AuthGuard,
+  AuthAdminGuard,
+  uploadAvatar.single("user-avatar"),
+  auth.adminEditUser
+);
 
 module.exports = router;
