@@ -86,7 +86,7 @@ class ProductService {
 
     for (let i = 0; i < photos.length; i++) {
       const deleteOptions = {
-        Bucket: "productphotoscatalogo",
+        Bucket: "catalogo-product-pic",
         Key: photos[i],
       };
       const deleteCommand = new DeleteObjectCommand(deleteOptions);
@@ -123,7 +123,7 @@ class ProductService {
     product.photos = newPhotosArray;
 
     const deleteS3Options = {
-      Bucket: "productphotoscatalogo",
+      Bucket: "catalogo-product-pic",
       Key: photo[0].photo,
     };
 

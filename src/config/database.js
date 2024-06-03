@@ -7,7 +7,7 @@ class Database {
   async start() {
     try {
       await mongoose
-        .connect(this.uri)
+        .connect(`${this.uri}`)
         .then(() => console.log("Connectado com o banco de dados."));
     } catch (error) {
       console.log(error);
