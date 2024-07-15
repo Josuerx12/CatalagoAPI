@@ -68,13 +68,8 @@ class ProductController {
   };
   getProducts = async (req, res) => {
     try {
-      const products = await this.product.get();
-      return res.status(201).json({
-        payload: {
-          status: "Success",
-          products,
-        },
-      });
+      const products = await this.product.get(req.query);
+      return res.status(201).json({ payload: products });
     } catch (error) {
       console.log(error);
       return res.status(401).json({

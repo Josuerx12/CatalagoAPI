@@ -29,10 +29,27 @@ class ProductService {
     });
     return product;
   }
-  async get() {
-    const products = await ProductModel.find();
+  async get(query) {
+    const { page = 1, limit = 10, name = "" } = query;
 
-    return products;
+    const regexTerms = name.split(" ").map((term) => new RegExp(term, "i"));
+
+    const filter = {
+      $or: [{ name: { $in: regexTerms } }],
+    };
+
+    const products = await ProductModel.find(filter)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 });
+
+    const count = await ProductModel.countDocuments(filter);
+
+    return {
+      products,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    };
   }
   async getById(id) {
     const product = await ProductModel.findById(id);
