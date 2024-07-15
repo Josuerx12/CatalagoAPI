@@ -5,7 +5,7 @@ const s3 = require("../utils/s3Auth");
 
 class ProductService {
   async new(details, photos) {
-    const { name, category, stock, unit, value, description } = details;
+    const { name, category, stock, unit, value = 1, description } = details;
     if (photos) {
       const photosArray = photos.map((photo) => ({ photo: photo.key }));
       const product = await ProductModel.create({
