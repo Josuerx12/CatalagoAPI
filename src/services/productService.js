@@ -32,10 +32,11 @@ class ProductService {
   async get(query) {
     const { page = 1, limit = 10, name = "" } = query;
 
-    const regexTerms = name.split(" ").map((term) => new RegExp(term, "i"));
-
+    const regexTerms = name.split(" ").map((term) => ({
+      name: { $regex: term, $options: "i" },
+    }));
     const filter = {
-      $or: [{ name: { $in: regexTerms } }],
+      $and: regexTerms,
     };
 
     const products = await ProductModel.find(filter)
